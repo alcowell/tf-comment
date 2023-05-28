@@ -1,0 +1,49 @@
+openapi: "3.0.1"
+info:
+  title: "Comment API"
+  version: "1.0.0"
+
+paths:
+  "/comments":
+    get:
+      deprecated: false
+      summary: "Get all comments"
+      responses:
+        "200":
+          description: "OK"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Comment"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'http://localhost'"
+        uri: "arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/${lambda_arn}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+
+components:
+  schemas:
+    Comment:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        content:
+          type: "string"
+        created_at:
+          type: "string"
+        created_by:
+          type: "string"
+        post_id:
+          type: "string"
